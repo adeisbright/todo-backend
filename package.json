@@ -1,7 +1,7 @@
 {
-  "name": "google-calender",
+  "name": "todo-backend",
   "version": "1.0.0",
-  "description": "An API that connects to Google Calendar while allowing end users to create events",
+  "description": "The Backend Process and Interface for interacting with a todo frontend",
   "main": "app.js",
   "scripts": {
     "test": "mocha --timeout 10000",
