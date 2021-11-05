@@ -2,7 +2,7 @@ const ItemService = require("../services/ItemService");
 const FileService = require("../services/FileService");
 const storageHelper = require("../lib/disk-storage-helper");
 const { google } = require("googleapis");
-const Item = require("../models/item");
+const Item = require("../models/items");
 const {
     ApplicationError,
     DbError,

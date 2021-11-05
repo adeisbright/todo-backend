@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-const Config = require("../config");
-const express = require("express");
 
 let environment = process.env.NODE_ENV || "dev";
 const uri = "mongodb://127.0.0.1:27017/starkstech";
