@@ -1,0 +1,86 @@
+[33mcommit e193c0991b0bb4c010c4d95d6a13a2ad9c0c50fe[m[33m ([m[1;36mHEAD -> [m[1;32mdev[m[33m)[m
+Author: acecycle4 <adeleke.bright@aceafrica.net>
+Date:   Fri Nov 5 05:57:59 2021 +0100
+
+    Add login handler and token validator middleware
+    
+    Verify that  a user agent has the authority to visit a particular
+    resource before allowing them to continue on that journey.
+    
+    Handle login and authenticate request are two middleware used for
+    generating token and for verifying if a request is authorize
+
+[33mcommit d808e28f5369c61e34bbfa4f7fbc24337e5d6b6c[m
+Author: acecycle4 <adeleke.bright@aceafrica.net>
+Date:   Fri Nov 5 05:49:29 2021 +0100
+
+    Add library functions as helpers for services
+    
+    Library functions like google storage helper and disk storage helper
+    are used to enable storing of files to either cloud storage bucket or
+    host disk.
+    
+    Other library functions are used for signing a token using jwt.
+
+[33mcommit 23d00a0259a94ca80dfe74d9ffe8275e393c476c[m
+Author: acecycle4 <adeleke.bright@aceafrica.net>
+Date:   Fri Nov 5 05:44:46 2021 +0100
+
+    Add user and file service layer
+    
+    Add the service layer to enable performing process on a user
+    and also on moving a file around.
+    
+    Also add a service for generating an authentication url from google
+    Oauth2
+
+[33mcommit 2e91205dc5de0f871428d38afe27eeecc18c0057[m
+Author: acecycle4 <adeleke.bright@aceafrica.net>
+Date:   Fri Nov 5 01:35:00 2021 +0100
+
+    Add error handling and document id check middleware
+    
+    The error handling middleware handles all errors generated within our
+    system.
+
+[33mcommit 03c4a184ba65665462c5cedaf63197ccc443cf29[m
+Author: acecycle4 <adeleke.bright@aceafrica.net>
+Date:   Fri Nov 5 01:27:31 2021 +0100
+
+    Add file upload helper middleware
+    
+    Uploading file uses disk locally and bucket remotely.
+    
+    The middleware as their name implies helps upload of files to the
+    different cloud environments
+
+[33mcommit d86e0f2692c42a911f24768fcea0717bf596fd01[m
+Author: acecycle4 <adeleke.bright@aceafrica.net>
+Date:   Fri Nov 5 01:21:22 2021 +0100
+
+    Create mongodb and postgersql loaders
+    
+    Create MongoDB and PostgreSQL loaders respectively for loading the db
+    client at startup
+    when needed
+
+[33mcommit 3bcb32f5d8062698bcf396350c69f348b7f46906[m
+Author: acecycle4 <adeleke.bright@aceafrica.net>
+Date:   Fri Nov 5 01:15:11 2021 +0100
+
+    Add todo item model , service , and controller
+    
+    The model of todo item is created before writing the service that is used
+    in the controller
+
+[33mcommit f8c39b6b88ec5be1ab92dfd61fad59ab6dfe483b[m[33m ([m[1;32mmaster[m[33m)[m
+Author: acecycle4 <adeleke.bright@aceafrica.net>
+Date:   Thu Nov 4 00:33:11 2021 +0100
+
+    Initialize and setup project
+    
+    The project is initialze by installing the dependencies using npm.
+    
+    After installing the dependencies , git ignore node_modules , create
+    a .env file to hold secret credentials and also create a gitmessage.txt
+    to use as commit template
