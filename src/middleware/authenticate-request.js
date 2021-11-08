@@ -16,7 +16,7 @@ const authenticateRequest = async (req, res, next) => {
                 tokenHeader.header,
                 async (err, data) => {
                     if (err) {
-                        return next(new BadRequestError(err.message));
+                        next(new BadRequestError(err.message));
                     } else {
                         let tokenDetail = await jwt.decode(token);
                         req.id = tokenDetail.id;

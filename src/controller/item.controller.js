@@ -8,9 +8,11 @@ const {
     DbError,
     NotFoundError,
     NotAuthorizeError,
+    BadRequestError,
 } = require("../middleware/error-handler");
 const itemService = new ItemService(Item);
 const fileService = new FileService(storageHelper);
+const UserService = require("../services/UserService");
 
 const oauth2client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -60,44 +62,54 @@ class ItemController {
         try {
             const { id } = req.params;
             let item = await itemService.getSingleItem(id);
-            if (!item) {
-                return next(new NotFoundError("The item was not found"));
-            }
             res.status(200).json({ data: item });
         } catch (error) {
             return next(new ApplicationError(error));
         }
     }
 
-    async createItem(req, res) {
-        if (req.file) {
-            const avatarName = req.file.originalname;
-            const uploadPath = "./public/uploads";
-            const todosAvatarPath = "./public/todo_avatars";
-            let getFilePath = await fileService.uploadToDisk(
-                avatarName,
-                uploadPath,
-                todosAvatarPath
-            );
-            req.body.todo_avatar = getFilePath;
-        }
-        const { date, time } = req.body;
-        const todoDate = new Date(`${date}T${time}`);
-        req.body.created_at = todoDate;
-        let item = await itemService.createItem(req.body);
+    async createItem(req, res, next) {
+        try {
+            if (req.file) {
+                const avatarName = req.file.originalname;
+                const uploadPath = "./public/uploads";
+                const todosAvatarPath = "./public/todo_avatars";
+                let getFilePath = await fileService.uploadToDisk(
+                    avatarName,
+                    uploadPath,
+                    todosAvatarPath
+                );
+                req.body.todo_avatar = getFilePath;
+            }
 
-        res.status(200).json({
-            message: "Your item was added successfully",
-            status: "200",
-            data: item,
-            eventUrl: authUrl,
-        });
+            const { startDate, startTime, dueDate, dueTime } = req.body;
+            req.body.startNum = new Date(`${startDate}T${startTime}`).getTime();
+            req.body.endNum = new Date(`${dueDate}T${dueTime}`).getTime();
+
+            const user = await UserService.findUser("id", req.id);
+            req.userId = req.id;
+            let item = await itemService.createItem(req.body);
+
+            const response = {
+                message: "Your item was added successfully",
+                status: "200",
+                data: item,
+            };
+            if (!user.google_calender_token) {
+                response.eventUrl = authUrl;
+            } else {
+                response.ok = true;
+            }
+            res.status(200).json(response);
+        } catch (error) {
+            return next(new ApplicationError(error));
+        }
     }
 
     async removeItem(req, res) {
         const { id } = req.params;
         await itemService.removeItem(id);
-        res.status(200).json({ message: "The item was removed" });
+        res.status(200).json({ message: "The item was removed", ok: true });
     }
 
     async updateItem(req, res) {
@@ -123,48 +135,55 @@ class ItemController {
 
     async createGoogleEvent(req, res, next) {
         try {
-            let tokens = {
-                access_token:
-                    "ya29.a0ARrdaM9sMFrT7w3nXy2FV7Zppxp3QOZXVA6Vzg71TSJwG5R4HNKl5ufZp3OfKjygfDaOh3ZeIHDWjWf9wjwdYdl35b4KBgT69FYMhARzI9JPyUrJCOXLTjzxVjO9Y2yk4cZjbP3sBJvlb3Bi_d1zfjX6i4h-",
-                refresh_token:
-                    "1//03PKsxqjZ8EhDCgYIARAAGAMSNwF-L9Irf_9unG8f2BOB8HIu4i6vIjoT2LWraljBRnn2R2rZowqbioCsnEXM2ZLfe6ZISJfF86I",
-                scope: "https://www.googleapis.com/auth/calendar",
-                token_type: "Bearer",
-                expiry_date: 1635693003765,
-            };
-            oauth2client.setCredentials(tokens);
+            let { summary, description, start, end, code } = req.body;
+            let googleToken;
+            const id = req.id;
+            const user = await UserService.findUser("id", id);
+            if (user.google_calender_token) {
+                googleToken = user.google_calender_token;
+            } else if (code) {
+                //Use the code sent to retrieve and set token
+                const { tokens } = await oauth2client.getToken(code);
+                googleToken = tokens;
+                await UserService.updateUser(
+                    "google_calender_token",
+                    googleToken,
+                    id
+                );
+            } else {
+                return next(new BadRequestError("Unable to create event"));
+            }
+
+            oauth2client.setCredentials(googleToken);
             const calender = google.calendar({
                 version: "v3",
                 oauth2client,
             });
+
             const eventDetails = {
-                summary: req.body.summary,
-                location: "online",
-                description: req.body.description,
+                summary: summary,
+                location: "Personal Device",
+                description: description,
                 start: {
-                    date: "2021-10-02",
+                    date: start.date,
                 },
                 end: {
-                    date: "2021-10-02",
+                    date: end.date,
                 },
                 reminders: {
                     useDefault: true,
                 },
             };
+
             let calenderEvent = await calender.events.insert({
                 auth: oauth2client,
                 calendarId: "primary",
                 resource: eventDetails,
             });
 
-            if (calenderEvent) {
-                console.log(calenderEvent.data.htmlLink);
-            } else {
-                consol.log("This Google no sabi document at all");
-            }
             res.status(200).json({
-                expiryDate: tokens.expiry_date,
-                data: "Still working on it ",
+                link: calenderEvent.data.htmlLink,
+                data: "Your event was added to calender successfully",
             });
         } catch (error) {
             return next(new ApplicationError(error));
