@@ -46,7 +46,7 @@ class ItemController {
         if (from && to) {
             let end = new Date(to);
             end.setDate(end.getDate() + 1);
-            queryParams.startDate = {
+            queryParams.created_at = {
                 $gte: new Date(from).getTime(),
                 $lte: end.getTime(),
             };
@@ -100,12 +100,16 @@ class ItemController {
         res.status(200).json({ message: "The item was removed", ok: true });
     }
 
-    async updateItem(req, res) {
+    async updateItem(req, res, next) {
         try {
             const { id } = req.params;
-            console.log(req.body);
+
             let doc = await itemService.updateItem(id, req.body);
-            res.status(200).json({ data: doc, message: "Testing Something" });
+            res.status(200).json({
+                data: doc,
+                status: 200,
+                message: "Your task was updated successfully",
+            });
         } catch (error) {
             return next(new ApplicationError(error));
         }
