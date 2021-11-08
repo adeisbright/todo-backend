@@ -1,16 +1,14 @@
 const util = require("util");
 const GoogleCloud = require("@google-cloud/storage");
 const path = require("path");
-const ServiceKeyFile = "./service-account.json";
-const PROJECT_NAME = "starkstech";
-const BUCKET_NAME = "starkstech_bucket";
-const serviceKey = path.join(__dirname, ServiceKeyFile);
+const ServiceKeyFile = process.env.CLOUD_BUCKET_SERVICE_KEY;
+const BUCKET_NAME = "bigjara_learn";
+const serviceKey = path.join(__dirname, "../storage_credentials.json");
 
 const { Storage } = GoogleCloud;
-
 const storage = new Storage({
     keyFilename: serviceKey,
-    projectId: PROJECT_NAME,
+    projectId: "test-bigjara",
 });
 
 const bucket = storage.bucket(BUCKET_NAME);
@@ -95,6 +93,7 @@ class GoogleStorage {
         new Promise((resolve, reject) => {
             const { originalname, buffer } = file;
             const blob = bucket.file(originalname.replace(/ /g, "_"));
+            console.log(bucket.name, blob.name);
             const blobStream = blob.createWriteStream({
                 resumable: false,
             });
@@ -105,7 +104,8 @@ class GoogleStorage {
                     );
                     resolve(publicUrl);
                 })
-                .on("error", () => {
+                .on("error", (e) => {
+                    console.log(e);
                     reject("Unable to upload image something went wrong");
                 })
                 .end(buffer);

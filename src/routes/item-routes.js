@@ -13,11 +13,13 @@ const {
 const multerMemory = require("../middleware/save-file-to-memory");
 const multerDisk = require("../middleware/save-file-to-disk");
 const Auth = require("../middleware/authenticate-request");
+const MoveFile = require("../middleware/move-file");
 router
     .all("/items", Auth)
     .route("/items")
     .get(getItems)
-    .post(multerDisk.saveToDisk.single("attachment"), createItem);
+    .post(multerMemory.single("attachment"), MoveFile.cloudMove, createItem);
+// .post(multerDisk.saveToDisk.single("attachment"), createItem);
 router.all("/items/:id", checkId, Auth);
 router.route("/items/:id").get(getItem).delete(removeItem).put(updateItem);
 router.get("/aouth2", getCalenderCode);

@@ -1,6 +1,7 @@
 const ItemService = require("../services/ItemService");
 const FileService = require("../services/FileService");
-const storageHelper = require("../lib/disk-storage-helper");
+// const storageHelper = require("../lib/disk-storage-helper");
+const storageHelper = require("../lib/google-storage-helper");
 const { google } = require("googleapis");
 const Item = require("../models/items");
 const {
@@ -70,18 +71,6 @@ class ItemController {
 
     async createItem(req, res, next) {
         try {
-            if (req.file) {
-                const avatarName = req.file.originalname;
-                const uploadPath = "./public/uploads";
-                const todosAvatarPath = "./public/todo_avatars";
-                let getFilePath = await fileService.uploadToDisk(
-                    avatarName,
-                    uploadPath,
-                    todosAvatarPath
-                );
-                req.body.todo_avatar = getFilePath;
-            }
-
             const { startDate, startTime, dueDate, dueTime } = req.body;
             req.body.startNum = new Date(`${startDate}T${startTime}`).getTime();
             req.body.endNum = new Date(`${dueDate}T${dueTime}`).getTime();
@@ -89,7 +78,6 @@ class ItemController {
             const user = await UserService.findUser("id", req.id);
             req.userId = req.id;
             let item = await itemService.createItem(req.body);
-
             const response = {
                 message: "Your item was added successfully",
                 status: "200",
