@@ -46,7 +46,7 @@ class ItemController {
         if (from && to) {
             let end = new Date(to);
             end.setDate(end.getDate() + 1);
-            queryParams.created_at = {
+            queryParams.startDate = {
                 $gte: new Date(from).getTime(),
                 $lte: end.getTime(),
             };
