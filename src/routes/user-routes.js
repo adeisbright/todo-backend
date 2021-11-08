@@ -8,8 +8,6 @@ const {
     addUser,
     updateUser,
     removeUser,
-    createTable,
-    addColumn,
     generateApiKey,
     getApiKey,
 } = require("../controller/user.controller");
@@ -20,9 +18,6 @@ router
     .get(Auth, getUser)
     .put(Auth, updateUser)
     .delete(Auth, removeUser);
-
-router.put("/api/modify-column", addColumn);
-router.post("/create-table", createTable);
 router.post("/auth", LoginHandler);
 router.get("/api/key", Auth, getApiKey);
 router.put("/api/key", Auth, generateApiKey);

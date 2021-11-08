@@ -115,7 +115,7 @@ class UserController {
     async getApiKey(req, res, next) {
         try {
             let id = req.id;
-            let key = await UserService.retriveData("users", "api_key", id);
+            let key = await UserService.retrieveData("users", "api_key", id);
             res.status(200).json(key);
         } catch (error) {
             return next(new ApplicationError(error));
