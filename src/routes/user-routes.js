@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const Auth = require("../middleware/authenticate-request");
 const LoginHandler = require("../middleware/handle-login");
+const validateUserRegistration = require("../middleware/validate-user-reg");
+
 const {
     getUsers,
     getUser,
@@ -12,7 +14,7 @@ const {
     getApiKey,
 } = require("../controller/user.controller");
 router.get("/users", getUsers);
-router.post("/users", addUser);
+router.post("/users", validateUserRegistration, addUser);
 router
     .route("/users/:id")
     .get(Auth, getUser)

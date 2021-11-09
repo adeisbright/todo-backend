@@ -51,6 +51,7 @@ class ItemController {
                 $lte: end.getTime(),
             };
         }
+        queryParams.userId = req.id;
         let items = await itemService.getItems(queryParams, skip, offset);
         res.status(200).json({
             data: items,
@@ -76,7 +77,7 @@ class ItemController {
             req.body.endNum = new Date(`${dueDate}T${dueTime}`).getTime();
 
             const user = await UserService.findUser("id", req.id);
-            req.userId = req.id;
+            req.body.userId = req.id;
             let item = await itemService.createItem(req.body);
             const response = {
                 message: "Your item was added successfully",
@@ -103,7 +104,7 @@ class ItemController {
     async updateItem(req, res, next) {
         try {
             const { id } = req.params;
-
+            req.body.userId = req.id;
             let doc = await itemService.updateItem(id, req.body);
             res.status(200).json({
                 data: doc,
@@ -120,7 +121,6 @@ class ItemController {
             const code = req.query.code;
             res.redirect(`http://localhost:3000/events?code=${code}`);
         } catch (error) {
-            console.log(error);
             res.status(500).json(error);
         }
     }

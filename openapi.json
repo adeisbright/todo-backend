@@ -1,0 +1,124 @@
+{
+    "openapi" : "3.0.1" , 
+    "info":{
+        "version" : "0.0.1" , 
+        "title" : "TODO REST API" , 
+        "description" : "TODO REST API is an HTPP API that enables the programmatic access and creation of task" ,
+        "termsOfService" : "http://localhost:3500/tos" , 
+        "contact" : {
+            "name" : "Adeleke Bright" , 
+            "email" : "adenababanla@gmail.com" , 
+            "url" : "https://bigjara.com"
+        } , 
+        "license" : {
+            "name" : "Apache 2.0" , 
+            "url" : "http://apache.org/license/license-2.0.html"
+        }
+    } , 
+    "servers" : [
+            {
+                "url" : "http://localhost:3500/docs" , 
+                "description" : "Local Server"
+            },
+            {
+                "url" : "https://example.com/docs" , 
+                "description" : "Production Server"
+            }
+        ] , 
+        "tags" : [
+            {
+                "name" : "CRUD Operations"
+            }
+    ] , 
+    "paths" : {
+            "/users" : {
+                "get" : {
+                    "tags" : ["CRUD Operations"] , 
+                    "description" : "GET users" , 
+                    "operationId" : "getUsers" , 
+                    "responses" : {
+                        "200": {
+                            "description" : "Successfully fetch students" , 
+                            "content" : {
+                                "application/json" : {
+                                    "schema" : {
+                                        "type" : "object" , 
+                                        "properties" : {
+                                            "message" : {
+                                                "type" : "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } , 
+                "post" : {
+                    "requestBody" : {
+                        "required" : true , 
+                        "content" : {
+                            "application/json":{
+                                "content" : {
+                                    "schema" : {
+                                        "type" : "object" ,
+                                        "properties" : {
+                                            "name" : {
+                                                "$ref" : "#/components/schemas/name" 
+                                            } , 
+                                            "email" : {
+                                                "type" : "string"
+                                            } , 
+                                            "password" : {
+                                                "type" : "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } 
+    } , 
+    "components" : {
+        "schemas" : {
+            "name" : {
+                "type" : "string"  , 
+                "description" : "Name of the user" , 
+                "example" : "adebright"
+            } , 
+            "email" : {
+                "type" : "string"  , 
+                "description" : "Email of the user" , 
+                "example" : "adenababanla@gmail.com"
+            } , 
+            "_id" : {
+                "type" : "string"  , 
+                "description" : "Id of a document" , 
+                "example" : "6188db3f8b9ad8afe1e8cd2a"
+            } ,
+            "user" : {
+                "type" : "object" , 
+                "properties" : {
+                    "name" : {
+                        "$ref" : "#/components/schemas/name"
+                    }
+                }
+            }
+        } , 
+        "securitySchemes": {
+            "ApiKeyAuth": {
+              "type": "apiKey",
+              "in": "header",
+              "name": "api-key"
+            }
+          }
+    } , 
+    "security" : [
+        
+        {
+            "ApiKeyAuth" : []
+        }
+    ]
+}

@@ -6,6 +6,8 @@ const cors = require("cors");
 const ItemsRouter = require("./routes/item-routes");
 const UserRouter = require("./routes/user-routes");
 const express = require("express");
+const swaggerUi = require("swagger-ui-express");
+const openApiDocumentation = require("../openapi.json");
 const { errorParser } = require("./middleware/error-handler");
 const app = express();
 
@@ -16,6 +18,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/", ItemsRouter);
 app.use("/", UserRouter);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openApiDocumentation));
 app.use(errorParser);
 
 MongooseLoader();
