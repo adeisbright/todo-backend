@@ -10,6 +10,7 @@ const {
     getCalenderCode,
     createGoogleEvent,
 } = require("../controller/item.controller");
+const { validateTodoData } = require("../middleware/Validator");
 const multerMemory = require("../middleware/save-file-to-memory");
 const multerDisk = require("../middleware/save-file-to-disk");
 const Auth = require("../middleware/authenticate-request");
@@ -18,8 +19,12 @@ router
     .all("/items", Auth)
     .route("/items")
     .get(getItems)
-    .post(multerMemory.single("attachment"), MoveFile.cloudMove, createItem);
-// .post(multerDisk.saveToDisk.single("attachment"), createItem);
+    .post(
+        validateTodoData,
+        multerMemory.single("attachment"),
+        MoveFile.cloudMove,
+        createItem
+    );
 router.all("/items/:id", checkId, Auth);
 router.route("/items/:id").get(getItem).delete(removeItem).put(updateItem);
 router.get("/aouth2", getCalenderCode);

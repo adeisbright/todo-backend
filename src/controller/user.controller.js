@@ -33,11 +33,7 @@ class UserController {
             const isUser = await UserService.findUser("email", email);
             if (isUser) throw new Error("A user already exist");
             let hashPwd = await bcrypt.hash(password, 10);
-            const result = await UserService.addUser([
-                name,
-                email.toLowerCase(),
-                hashPwd,
-            ]);
+            await UserService.addUser([name, email.toLowerCase(), hashPwd]);
             res.status(200).json({
                 status: 200,
                 message: "The user was added successfully",
