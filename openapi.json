@@ -1,0 +1,514 @@
+{
+    "openapi" : "3.0.1" , 
+    "info":{
+        "version" : "0.0.1" , 
+        "title" : "Task Manager REST API" , 
+        "summary" : "An Example API on creating and publishing public facing API" , 
+        "description" : "Task Manager provides restful endpoints for creating todo task and adding such task to Google Calender" ,
+        "termsOfService" : "https://github.com/adeisbright/task-manager-backend/readme.md" , 
+        "contact" : {
+            "name" : "Adeleke Bright" , 
+            "email" : "adenababanla@gmail.com" , 
+            "url" : "https://linkedin.com/in/adeleke-bright"
+        } , 
+        "license" : {
+            "name" : "Apache 2.0" , 
+            "url" : "https://apache.org/license/license-2.0.html"
+        }
+    } , 
+    "servers" : [
+            {
+                "url" : "http://localhost:{port}/docs" , 
+                "description" : "Local Server" , 
+                "variables" : {
+                    "port":{
+                        "default" : 3500 , 
+                        "description" : "The port number you intend to run your server on"
+                    }
+                }
+            },
+            {
+                "url" : "https://example.com/docs" , 
+                "description" : "Production Server"
+            }
+        ] , 
+    "components" : {
+        "schemas" : {
+            "name" : {
+                "type" : "string"  , 
+                "description" : "Name of the user" , 
+                "example" : "adebright"
+            } , 
+            "description" : {
+                "type" : "string"  , 
+                "description" : "Task or todo descriptioin" , 
+                "example" : "Deploy API to Google Cloud using Serveless AppEngine as the compute option"
+            } , 
+            "title" : {
+                "type" : "string"  , 
+                "description" : "Title for the task" , 
+                "example" : "Deploy API"
+            } , 
+            "email" : {
+                "type" : "string"  , 
+                "description" : "Email of the user" , 
+                "example" : "adenababanla@gmail.com"
+            } , 
+            "_id" : {
+                "type" : "string"  , 
+                "description" : "Id of a document" , 
+                "example" : "6188db3f8b9ad8afe1e8cd2a"
+            } ,
+            "message" : {
+                "type" : "string" , 
+                "description" : "A response message from the server" , 
+                "example" : "Your task was added successfully"
+            } ,
+            "password" : {
+                "type" : "string" , 
+                "description" : "A security text that only the user can remember" , 
+                "example" : "78gt#2!jdui3jsjs09"
+            } , 
+            "startDate" : {
+                "type" : "date" , 
+                "description" : "Date when task will commence" , 
+                "example" : "2021-12-25"
+            } ,
+            "dueDate" : {
+                "type" : "date" , 
+                "description" : "Date when task will expire or be completed" , 
+                "example" : "2021-01-31"
+            } , 
+            "startTime" : {
+                "type" : "date" , 
+                "description" : "Time of the day to kick of the task" , 
+                "example" : "15:45"
+            } ,
+            "dueTime" : {
+                "type" : "date" , 
+                "description" : "Time of the day to complete the task" , 
+                "example" : "16:45"
+            } ,
+            "attachment" : {
+                "type" : "image/png" , 
+                "description" : "A file to be used as a cover for the todo item when displayed" 
+            } ,
+            "status" : {
+                "type" : "integer" , 
+                "format" : "int64" , 
+                "description" : "Status code after server completes request handling" , 
+                "example" : 200
+            } , 
+            "user" : {
+                "type" : "object" , 
+                "properties" : {
+                    "name" : {
+                        "$ref" : "#/components/schemas/name"
+                    }
+                }
+            }
+        } , 
+        "responses":{
+            "400" : {
+                "description" : "A bad request from the user"  , 
+                "content" : {
+                    "application/json" : {
+                        "type" : "object" , 
+                        "properties" : {
+                            "message" : {
+                                "$ref" : "#/components/schemas/message"
+                            } 
+                        }
+                    }
+                }
+            } , 
+            "500" : {
+                "description" : "An error on the server"  , 
+                "content" : {
+                    "application/json" : {
+                        "type" : "object" , 
+                        "properties" : { 
+                            "message" : {
+                                "$ref" : "#/components/schemas/message"
+                            } 
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "ApiKeyAuth": {
+              "type": "apiKey",
+              "in": "header",
+              "name": "api-key"
+            }
+          }
+    } , 
+    "security" : [
+        
+        {
+            "ApiKeyAuth" : []
+        }
+    ] , 
+    "tags" : [{"name" : "User Operation"}] , 
+    "paths" : {
+            "/users" : {
+                "tags" : ["User Operation"] , 
+                "post" : {
+                    "requestBody" : {
+                        "required" : true , 
+                        "content" : {
+                            "application/json":{
+                                "content" : {
+                                    "schema" : {
+                                        "type" : "object" ,
+                                        "properties" : {
+                                            "name" : {
+                                                "$ref" : "#/components/schemas/name" 
+                                            } , 
+                                            "email" : {
+                                                "$ref" : "#/components/schemas/email" 
+                                            } , 
+                                            "password" : {
+                                                "type" : "string" , 
+                                                "description" : "A security text that only the user can remember" , 
+                                                "example" : "78gt#2!jdui3jsjs09"
+                                            }
+                                        } , 
+                                        "required" : ["name" , "email" , "password"]
+                                    }
+                                }
+                            }
+                        }
+                    } , 
+                    "responses" : {
+                        "200" : {
+                            "description" : "A message indicating successful request"  , 
+                            "content" : {
+                                "application/json" : {
+                                    "type" : "object" , 
+                                    "properties" : {
+                                        "status" : {
+                                            "$ref" : "#/components/schemas/status"
+                                        } , 
+                                        "message" : {
+                                            "$ref" : "#/components/schemas/message"
+                                        } 
+                                    }
+                                }
+                            }
+                        } , 
+                        "400" : {
+                            "description" : "A bad request from the user"  , 
+                            "content" : {
+                                "application/json" : {
+                                    "type" : "object" , 
+                                    "properties" : {
+                                        "message" : {
+                                            "$ref" : "#/components/schemas/message"
+                                        } 
+                                    }
+                                }
+                            }
+                        } , 
+                        "500" : {
+                            "description" : "An error on the server"  , 
+                            "content" : {
+                                "application/json" : {
+                                    "type" : "object" , 
+                                    "properties" : { 
+                                        "message" : {
+                                            "$ref" : "#/components/schemas/message"
+                                        } 
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } ,
+            "/items" : {
+                "tags" : ["Create Item"] , 
+                "post" : {
+                    "requestBody" : {
+                        "required" : true , 
+                        "content" : {
+                            "multipart/form-data":{
+                                    "schema" : {
+                                        "type" : "object" ,
+                                        "properties" : {
+                                            "title" : {
+                                                "$ref" : "#/components/schemas/title" 
+                                            } , 
+                                            "description" : {
+                                                "$ref" : "#/components/schemas/description" 
+                                            } , 
+                                            "startTime" : {
+                                                "$ref" : "#/components/schemas/startTime" 
+                                            } ,
+                                            "dueTime" : {
+                                                "$ref" : "#/components/schemas/dueTime" 
+                                            } ,
+                                            "startDate" : {
+                                                "$ref" : "#/components/schemas/startDate" 
+                                            } ,
+                                            "dueDate" : {
+                                                "$ref" : "#/components/schemas/dueDate" 
+                                            } ,
+                                            "attachment" : {
+                                                "type" : "string" , 
+                                                "contentMediaType" : "image/*" , 
+                                                "contentEncoding" : "base64"
+                                            }
+                                        }
+                                    
+                                }
+                            }
+                        }
+                    } , 
+                    "responses" : {
+                        "200" : {
+                            "description" : "Your task was added"  , 
+                            "content" : {
+                                "application/json" : {
+                                    "type" : "object" , 
+                                    "properties" : {
+                                        "todo_avatar" : {
+                                            "$ref" : "#/components/schemas/status"
+                                        } , 
+                                        "title" : {
+                                            "$ref" : "#/components/schemas/message"
+                                        } ,
+                                        "description" : {
+                                            "$ref" : "#/components/schemas/status"
+                                        } , 
+                                        "startTime" : {
+                                            "$ref" : "#/components/schemas/startTime" 
+                                        } ,
+                                        "dueTime" : {
+                                            "$ref" : "#/components/schemas/dueTime" 
+                                        } ,
+                                        "startDate" : {
+                                            "$ref" : "#/components/schemas/startDate" 
+                                        } ,
+                                        "dueDate" : {
+                                            "$ref" : "#/components/schemas/dueDate" 
+                                        } , 
+                                        "_id" : {
+                                            "$ref" : "#/components/schemas/_id" 
+                                        }
+                                    }
+                                }
+                            }
+                        } , 
+                        "400" : {
+                            "description" : "A bad request from the user"  , 
+                            "content" : {
+                                "application/json" : {
+                                    "type" : "object" , 
+                                    "properties" : {
+                                        "message" : {
+                                            "$ref" : "#/components/schemas/message"
+                                        } 
+                                    }
+                                }
+                            }
+                        } , 
+                        "500" : {
+                            "description" : "An error on the server"  , 
+                            "content" : {
+                                "application/json" : {
+                                    "type" : "object" , 
+                                    "properties" : { 
+                                        "message" : {
+                                            "$ref" : "#/components/schemas/message"
+                                        } 
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } , 
+                "get": {
+                    "description" : "Returns all created task or todo item" , 
+                    "responses" : {
+                        "400":{
+                            "$ref":"#/components/responses/400"
+                        } , 
+                        "500" : {
+                            "$ref" : "#/components/responses/500"
+                        } , 
+                        "200":{
+                            "content":{
+                                "application/json":{
+                                    "type":"array" , 
+                                    "items":{
+
+                                    }
+                                }
+                            }
+                        }
+                    } , 
+                    "parameters" : [
+                        {
+                            "name" : "page_no" , 
+                            "in" : "query" , 
+                            "required" : "true" , 
+                            "description" : "The particular page of the API to load" , 
+                            "schema" : {
+                                "type" : "integer" , 
+                                "default" : 0
+                            }
+                        } ,
+                        {
+                            "name" : "offset" , 
+                            "in" : "query" , 
+                            "required" : "true" , 
+                            "description" : "The number of task to skip" , 
+                            "schema" : {
+                                "type" : "integer" , 
+                                "default" : 6
+                            }
+                        } , 
+                        {
+                            "name" : "from" , 
+                            "in" : "query" , 
+                            "required" : false , 
+                            "description" : "A particular date to start from when filtering todo items" , 
+                            "schema" : {
+                                "type" : "string" 
+                            }
+                        } , 
+                        {
+                            "name" : "to" , 
+                            "in" : "query" , 
+                            "required" : false , 
+                            "description" : "The end date for which items will be retrieved" , 
+                            "schema" : {
+                                "type" : "integer" 
+                            }
+                        } 
+                        
+                    ]
+                }
+            }  , 
+            "/items/{id}" : { 
+                "get" : {
+                    "responses":{
+                        "200" :{
+                            "description" : "Returns a task with the provided id" , 
+                            "content" : {
+                                "application/json":{
+                                    "type" : "object" , 
+                                    "properties" : {
+                                        "title" : {
+                                            "$ref" :"#/components/schemas/title"
+                                        }
+                                    }
+                                }
+                            }
+                        } , 
+                        "400" : {
+                            "$ref" :"#/components/responses/400"
+                        },
+                        "500" : {
+                            "$ref" :"#/components/responses/500"
+                        }
+                    }
+                } , 
+                "put" : {
+                    "parameter" : {
+                        "name" : "id" , 
+                        "in" : "path" , 
+                        "required" : true , 
+                        "schema" : {
+                            "type" : "string"
+                        }
+                    } , 
+                    "description" : "Updates the todo item with the given id" , 
+                    "responses":{
+                        "200" :{
+                            "description" : "Returns a task with the provided id" , 
+                            "content" : {
+                                "application/json":{
+                                    "type" : "object" , 
+                                    "properties" : {
+                                        "title" : {
+                                            "$ref" :"#/components/schemas/title"
+                                        }
+                                    }
+                                }
+                            }
+                        } , 
+                        "400" : {
+                            "$ref" :"#/components/responses/400"
+                        },
+                        "500" : {
+                            "$ref" :"#/components/responses/500"
+                        }
+                    } , 
+                    "requestBody" : {
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type" : "object" , 
+                                    "properties" : {
+                                        "title" : {
+                                            "$ref":"#/components/schemas/title"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } , 
+                "delete" : {
+                    "parameter" : {
+                        "name" : "id" , 
+                        "in" : "path" , 
+                        "required" : true , 
+                        "schema" : {
+                            "type" : "string"
+                        }
+                    } ,
+                    "responses":{
+                        "200" :{
+                            "description" : "Removes a task with the provided id from the database" , 
+                            "content" : {
+                                "application/json":{
+                                    "type" : "object" , 
+                                    "properties" : {
+                                        "title" : {
+                                            "$ref" : "#/components/schemas/title" 
+                                        } , 
+                                        "description" : {
+                                            "$ref" : "#/components/schemas/description" 
+                                        } , 
+                                        "startTime" : {
+                                            "$ref" : "#/components/schemas/startTime" 
+                                        } ,
+                                        "dueTime" : {
+                                            "$ref" : "#/components/schemas/dueTime" 
+                                        } ,
+                                        "startDate" : {
+                                            "$ref" : "#/components/schemas/startDate" 
+                                        } ,
+                                        "dueDate" : {
+                                            "$ref" : "#/components/schemas/dueDate" 
+                                        } 
+                                    }
+                                }
+                            }
+                        } , 
+                        "400" : {
+                            "$ref" :"#/components/responses/400"
+                        },
+                        "500" : {
+                            "$ref" :"#/components/responses/500"
+                        }
+                    }
+                }
+            }
+    } 
+    
+}
