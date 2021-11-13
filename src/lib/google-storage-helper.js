@@ -3,12 +3,12 @@ const GoogleCloud = require("@google-cloud/storage");
 const path = require("path");
 const ServiceKeyFile = process.env.CLOUD_BUCKET_SERVICE_KEY;
 const BUCKET_NAME = "bigjara_learn";
-const serviceKey = path.join(__dirname, "../storage_credentials.json");
+const serviceKey = path.join(__dirname, "../../storage_credentials.json");
 
 const { Storage } = GoogleCloud;
 const storage = new Storage({
     keyFilename: serviceKey,
-    projectId: "test-bigjara",
+    projectId: process.env.GOOGLE_PROJECT_ID,
 });
 
 const bucket = storage.bucket(BUCKET_NAME);
