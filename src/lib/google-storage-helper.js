@@ -1,7 +1,6 @@
 const util = require("util");
 const GoogleCloud = require("@google-cloud/storage");
 const path = require("path");
-const ServiceKeyFile = process.env.CLOUD_BUCKET_SERVICE_KEY;
 const BUCKET_NAME = "bigjara_learn";
 const serviceKey = path.join(__dirname, "../../storage_credentials.json");
 
