@@ -1,12 +1,6 @@
 const mongoose = require("mongoose");
 
-let environment = process.env.NODE_ENV || "dev";
-const uri = "mongodb://127.0.0.1:27017/starkstech";
-// environment === "dev"
-//     ? Config.MongoDB.uri.dev
-//     : environment === "test"
-//     ? Config.MongoDB.uri.test
-//     : Config.MongoDB.uri.prod;
+const uri = process.env.REMOTE_MONGODB;
 const options = {
     useNewUrlParser: true,
     autoIndex: false,

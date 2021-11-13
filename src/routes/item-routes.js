@@ -20,8 +20,8 @@ router
     .route("/items")
     .get(getItems)
     .post(
-        validateTodoData,
         multerMemory.single("attachment"),
+        validateTodoData,
         MoveFile.cloudMove,
         createItem
     );

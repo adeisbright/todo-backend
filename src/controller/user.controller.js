@@ -78,7 +78,7 @@ class UserController {
     }
     async createTable(req, res, next) {
         try {
-            const result = await UserService.createTable();
+            const result = await UserService.createTable("test_table");
             res.status(200).json(result);
         } catch (error) {
             return next(new ApplicationError(error));

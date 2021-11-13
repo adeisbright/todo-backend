@@ -1,14 +1,10 @@
 const ItemService = require("../services/ItemService");
 const FileService = require("../services/FileService");
-// const storageHelper = require("../lib/disk-storage-helper");
 const storageHelper = require("../lib/google-storage-helper");
 const { google } = require("googleapis");
 const Item = require("../models/items");
 const {
     ApplicationError,
-    DbError,
-    NotFoundError,
-    NotAuthorizeError,
     BadRequestError,
 } = require("../middleware/error-handler");
 const itemService = new ItemService(Item);
@@ -42,11 +38,11 @@ class ItemController {
             from = req.query.from;
             to = req.query.to;
         }
-        //console.log(new Date(from).getTime(), to);
+
         if (from && to) {
             let end = new Date(to);
             end.setDate(end.getDate() + 1);
-            queryParams.created_at = {
+            queryParams.startNum = {
                 $gte: new Date(from).getTime(),
                 $lte: end.getTime(),
             };
@@ -81,7 +77,7 @@ class ItemController {
             let item = await itemService.createItem(req.body);
             const response = {
                 message: "Your item was added successfully",
-                status: "200",
+                status: 200,
                 data: item,
             };
             if (!user.google_calender_token) {

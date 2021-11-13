@@ -18,7 +18,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/", ItemsRouter);
 app.use("/", UserRouter);
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiDocumentation));
+app.use("/v1", swaggerUi.serve, swaggerUi.setup(openApiDocumentation));
 app.use(errorParser);
 
 MongooseLoader();

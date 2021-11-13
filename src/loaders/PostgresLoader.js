@@ -1,8 +1,8 @@
 const Pool = require("pg").Pool;
 module.exports = new Pool({
-    user: process.env.PG_USER,
-    host: process.env.PG_HOST,
-    database: String(process.env.PG_DB).replace("\n", ""),
-    password: process.env.PG_PWD,
-    port: process.env.PG_PORT,
+    user: process.env.REMOTE_PG_USER,
+    host: process.env.REMOTE_PG_HOST,
+    database: String(process.env.REMOTE_PG_DB).replace("\n", ""),
+    password: process.env.REMOTE_PG_PWD,
+    port: process.env.REMOTE_PG_PORT,
 });

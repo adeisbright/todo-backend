@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Auth = require("../middleware/authenticate-request");
 const LoginHandler = require("../middleware/handle-login");
-const { validateUserRegistration } = require("../middleware/Validator");
 
 const {
     getUsers,
@@ -13,8 +12,8 @@ const {
     generateApiKey,
     getApiKey,
 } = require("../controller/user.controller");
-router.get("/users", getUsers);
-router.post("/users", validateUserRegistration, addUser);
+router.get("/users", Auth, getUsers);
+router.post("/users", addUser);
 router
     .route("/users/:id")
     .get(Auth, getUser)

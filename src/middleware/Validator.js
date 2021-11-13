@@ -42,41 +42,16 @@ class Validator {
 
     static async validateTodoData(req, res, next) {
         try {
-            const {
-                title,
-                description,
-                startDate,
-                startTime,
-                dueDate,
-                dueTime,
-            } = req.body;
-
-            let today = new Date();
-            today.setDate(today.getDate() - 1);
+            const { title, description } = req.body;
 
             const schema = Joi.object({
                 title: Joi.string().min(2).required(),
                 description: Joi.string().required(),
-                startDate: Joi.date()
-                    .iso()
-                    .greater(today.getTime())
-                    .required()
-                    .message("You cannot set your start date backwards"),
-                dueDate: Joi.date()
-                    .greater(Joi.ref("startDate"))
-                    .required()
-                    .message("Provide a valid due date"),
-                startTime: Joi.string().required(),
-                endTime: Joi.string().required(),
             });
 
             const { error, value } = schema.validate({
                 title: title,
                 description: description,
-                startDate: startDate,
-                dueDate: dueDate,
-                startTime: startTime,
-                dueTime: dueTime,
             });
             if (error) {
                 return next(new BadRequestError(error.message));

@@ -55,22 +55,34 @@ class UserService {
         }
     }
 
-    async createTable() {
-        const queryText = `
-        CREATE TABLE IF NOT EXISTS people(
-            id SERIAL PRIMARY KEY ,
-            data JSONB
-        )`;
-        await pool.query(queryText);
-        const person = {
-            name: "Adebright of Bigjara",
-            email: "adenababanla@gmail.com",
-            age: 27,
-            created_at: 111111111,
-        };
-        await pool.query("INSERT INTO people(data) VALUES($1)", [person]);
-        const { rows } = await pool.query("SELECT * FROM people");
-        return rows;
+    async createTable(tableName) {
+        const client = await pool.connect();
+        try {
+            await client.query("BEGIN");
+            const queryText = `
+            CREATE TABLE IF NOT EXISTS ${tableName}(
+                id SERIAL PRIMARY KEY ,
+                data JSONB
+            )`;
+            await client.query(queryText);
+            const person = {
+                name: "Adebright of Bigjara",
+                email: "example@gmail.com",
+                age: 27,
+                created_at: 111111111,
+            };
+            await client.query(`INSERT INTO ${tableName}(data) VALUES($1)`, [
+                person,
+            ]);
+            await client.query(`SELECT * FROM ${tableName}`);
+            let n = await client.query("COMMIT");
+            return n;
+        } catch (error) {
+            await client.query("ROLLBACK");
+            throw error;
+        } finally {
+            client.release();
+        }
     }
 
     async addColumn(table, column, cType) {
